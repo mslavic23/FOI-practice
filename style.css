@@ -1,0 +1,45 @@
+
+header {
+  display: flex;              /* h1 i nav.foi-header stoje jedno pored drugog */
+  align-items: center;        /* okomito centrirani h1 i nav.foi-header unutar headera */
+  justify-content: space-between; /* h1 skroz lijevo, nav skroz desno */
+  padding: 1rem 2rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  margin: 0;                  /* uklanja zadani razmak oko h1 */
+}
+
+nav.foi-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;                  /* razmak između logo-diva, ul-a i right-header diva */
+}
+
+nav.foi-header ul.left-header {
+  display: flex;              /* 3 <li> da stoje u redu (ne jedan ispod drugog) */
+  align-items: center;
+  gap: 1.5rem;                /* razmak između Practice/Exams/Results */
+  list-style: none;           /* uklanja bullet pointove */
+  margin: 0;
+  padding: 0;
+}
+
+nav.foi-header .right-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;                  /* razmak između Menu i Login */
+}
+
+nav.foi-header a {
+  text-decoration: none;      /* uklanja podcrtavanje linkova */
+  color: #222;
+  font-weight: 500;
+}
+
+nav.foi-header a:hover {
+  color: #666;                /* vizualna reakcija na hover */
+}
