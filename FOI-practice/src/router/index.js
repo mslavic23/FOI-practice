@@ -1,10 +1,10 @@
-import TestPage from '../components/TestPage.vue'
+import TestPage from '../views/TestPage.vue'
+import PracticeTestPage from '../views/PracticeTestPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import MainPage from '../components/mainPage.vue'
-import PracticePage from '../components/PracticePage.vue'
-import ExamPage from '../components/ExamPage.vue'
-import ResultsPage from '../components/ResultsPage.vue'
-
+import MainPage from '../views/MainPage.vue'
+import PracticePage from '../views/PracticePage.vue'
+import ExamPage from '../views/ExamPage.vue'
+import ResultsPage from '../views/ResultsPage.vue'
 
 
 
@@ -15,6 +15,7 @@ const routes = [
   { path: '/exams', component: ExamPage },
   { path: '/results', component: ResultsPage },
   { path: '/test', component: TestPage },
+  { path: '/practice-test', component: PracticeTestPage },
 ]
 
 const router = createRouter({
