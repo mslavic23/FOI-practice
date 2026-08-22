@@ -4,7 +4,35 @@ import { ref, onMounted } from 'vue'
 const ukupnoRijeseno = ref(0)
 const prosjecnoVrijeme = ref(0)
 const postotakTocnosti = ref(0)
-const ucitavanje = ref(true)
+const breakdown = ref([])
+
+const practiceFrontTeme = [
+  { kljuc: 'javascript', naziv: 'JavaScript' },
+  { kljuc: 'dom', naziv: 'DOM' },
+  { kljuc: 'frontendframework', naziv: 'Frontend framework' },
+  { kljuc: 'webstranica', naziv: 'Web stranica' },
+]
+const practiceBackTeme = [
+  { kljuc: 'jsposluzitelj', naziv: 'JavaScript na poslužitelju' },
+  { kljuc: 'nodejs', naziv: 'Node.js' },
+  { kljuc: 'eventloop', naziv: 'Event-loop' },
+  { kljuc: 'asinkronost', naziv: 'Asinkronost' },
+  { kljuc: 'webaplikacija', naziv: 'Web aplikacija' },
+]
+const examRazine = ['osnovna', 'umjerena', 'napredna']
+
+function nadjiPostotak(tip, kategorija, razina) {
+  const stavka = breakdown.value.find(b => b.type === tip && b.category === kategorija && b.level === razina)
+  return stavka ? Math.round(stavka.avg_accuracy) : null
+}
+
+function oznakaZaPostotak(postotak) {
+  if (postotak === null) return 'nema pokušaja'
+  if (postotak >= 80) return `savladano (${postotak}%)`
+  if (postotak >= 60) return `solidno (${postotak}%)`
+  if (postotak >= 40) return `dovoljno (${postotak}%)`
+  return `nedovoljno (${postotak}%)`
+}
 
 async function dohvatiSazetak() {
   try {
@@ -15,13 +43,21 @@ async function dohvatiSazetak() {
     postotakTocnosti.value = data.avg_accuracy ? Math.round(data.avg_accuracy) : 0
   } catch (error) {
     console.error('Greška pri dohvaćanju sažetka:', error)
-  } finally {
-    ucitavanje.value = false
+  }
+}
+
+async function dohvatiBreakdown() {
+  try {
+    const response = await fetch('http://localhost:3000/api/results/breakdown')
+    breakdown.value = await response.json()
+  } catch (error) {
+    console.error('Greška pri dohvaćanju breakdowna:', error)
   }
 }
 
 onMounted(() => {
   dohvatiSazetak()
+  dohvatiBreakdown()
 })
 </script>
 
@@ -33,7 +69,7 @@ onMounted(() => {
         <p>{{ ukupnoRijeseno }}</p>
       </div>
       <div class="exam-length-result">
-        <p>Prosjecno vrijeme rjesavanja</p>
+        <p>Prosječno vrijeme rijesavanja</p>
         <p>{{ prosjecnoVrijeme }} sek</p>
       </div>
       <div class="exam-percentage-result">
@@ -44,14 +80,50 @@ onMounted(() => {
 
     <div class="exam-stat-chart">
       <h3>Statistika ispita</h3>
-      <div class="exam-chart-frontend"></div>
-      <div class="exam-chart-backend"></div>
+      <div class="chart-stupac">
+        <p class="chart-naslov">Front-end</p>
+        <div v-for="razina in examRazine" :key="razina" class="chart-red">
+          <span class="chart-label">{{ razina }}</span>
+          <div class="chart-traka-pozadina">
+            <div class="chart-traka" :style="{ width: (nadjiPostotak('exam','frontend',razina) || 0) + '%' }"></div>
+          </div>
+          <span class="chart-vrijednost">{{ nadjiPostotak('exam','frontend',razina) ?? '-' }}%</span>
+        </div>
+      </div>
+      <div class="chart-stupac">
+        <p class="chart-naslov">Back-end</p>
+        <div v-for="razina in examRazine" :key="razina" class="chart-red">
+          <span class="chart-label">{{ razina }}</span>
+          <div class="chart-traka-pozadina">
+            <div class="chart-traka" :style="{ width: (nadjiPostotak('exam','backend',razina) || 0) + '%' }"></div>
+          </div>
+          <span class="chart-vrijednost">{{ nadjiPostotak('exam','backend',razina) ?? '-' }}%</span>
+        </div>
+      </div>
     </div>
 
     <div class="practice-stat-chart">
       <h3>Statistika vjezbe</h3>
-      <div class="practice-chart-frontend"></div>
-      <div class="practice-chart-backend"></div>
+      <div class="chart-stupac">
+        <p class="chart-naslov">Front-end</p>
+        <div v-for="tema in practiceFrontTeme" :key="tema.kljuc" class="chart-red">
+          <span class="chart-label">{{ tema.naziv }}</span>
+          <div class="chart-traka-pozadina">
+            <div class="chart-traka" :style="{ width: (nadjiPostotak('practice',tema.kljuc,'practice') || 0) + '%' }"></div>
+          </div>
+          <span class="chart-vrijednost">{{ nadjiPostotak('practice',tema.kljuc,'practice') ?? '-' }}%</span>
+        </div>
+      </div>
+      <div class="chart-stupac">
+        <p class="chart-naslov">Back-end</p>
+        <div v-for="tema in practiceBackTeme" :key="tema.kljuc" class="chart-red">
+          <span class="chart-label">{{ tema.naziv }}</span>
+          <div class="chart-traka-pozadina">
+            <div class="chart-traka" :style="{ width: (nadjiPostotak('practice',tema.kljuc,'practice') || 0) + '%' }"></div>
+          </div>
+          <span class="chart-vrijednost">{{ nadjiPostotak('practice',tema.kljuc,'practice') ?? '-' }}%</span>
+        </div>
+      </div>
     </div>
 
     <div class="stat-details">
@@ -61,18 +133,17 @@ onMounted(() => {
         <div class="practice-info-results">
           <h5>JavaScript front-end</h5>
           <ul class="info-practice-front">
-            <li>JavaScript<p>savladano (85%)</p></li>
-            <li>DOM<p>solidno (65%)</p></li>
-            <li>Frontend framework<p>dovoljno (50%)</p></li>
-            <li>Web stranica<p>dovoljno (50%)</p></li>
+            <li v-for="tema in practiceFrontTeme" :key="tema.kljuc">
+              {{ tema.naziv }}
+              <p>{{ oznakaZaPostotak(nadjiPostotak('practice', tema.kljuc, 'practice')) }}</p>
+            </li>
           </ul>
           <h5>JavaScript back-end</h5>
           <ul class="info-practice-back">
-            <li>JavaScript na poslužitelju<p>solidno (60%)</p></li>
-            <li>Node.js<p>dovoljno (55%)</p></li>
-            <li>Asinkronost<p>nedovoljno (40%)</p></li>
-            <li>Event-loop<p>nedovoljno (20%)</p></li>
-            <li>Web aplikacija<p>nedovoljno (30%)</p></li>
+            <li v-for="tema in practiceBackTeme" :key="tema.kljuc">
+              {{ tema.naziv }}
+              <p>{{ oznakaZaPostotak(nadjiPostotak('practice', tema.kljuc, 'practice')) }}</p>
+            </li>
           </ul>
         </div>
       </div>
@@ -82,15 +153,17 @@ onMounted(() => {
         <div class="exam-info-results">
           <h5>JavaScript front-end</h5>
           <ul class="info-exam-front">
-            <li>Osnovna razina<p>savladano (85%)</p></li>
-            <li>Umjerena razina<p>solidno (70%)</p></li>
-            <li>Napredna razina<p>solidno (65%)</p></li>
+            <li v-for="razina in examRazine" :key="razina">
+              {{ razina }}
+              <p>{{ oznakaZaPostotak(nadjiPostotak('exam', 'frontend', razina)) }}</p>
+            </li>
           </ul>
           <h5>JavaScript back-end</h5>
           <ul class="info-exam-back">
-            <li>Osnovna razina<p>solidno (60%)</p></li>
-            <li>Umjerena razina<p>dovoljno (50%)</p></li>
-            <li>Napredna razina<p>nedovoljno (40%)</p></li>
+            <li v-for="razina in examRazine" :key="razina">
+              {{ razina }}
+              <p>{{ oznakaZaPostotak(nadjiPostotak('exam', 'backend', razina)) }}</p>
+            </li>
           </ul>
         </div>
       </div>

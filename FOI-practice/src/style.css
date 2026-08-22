@@ -167,3 +167,38 @@ footer p {
   margin: 0;
 }
 
+.chart-stupac {
+  margin-bottom: 1rem;
+}
+.chart-naslov {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.chart-red {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+}
+.chart-label {
+  width: 140px;
+  flex-shrink: 0;
+}
+.chart-traka-pozadina {
+  flex: 1;
+  height: 16px;
+  background-color: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.chart-traka {
+  height: 100%;
+  background-color: #4a90d9;
+}
+.chart-vrijednost {
+  width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+

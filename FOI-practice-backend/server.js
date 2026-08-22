@@ -77,3 +77,21 @@ app.get('/api/results/summary', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server sluša na http://localhost:${PORT}`);
 });
+
+app.get('/api/results/breakdown', (req, res) => {
+  const query = `
+    SELECT type, category, level,
+      AVG(correct_answers / total_questions * 100) AS avg_accuracy,
+      COUNT(*) AS broj_pokusaja
+    FROM results
+    GROUP BY type, category, level
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Greška pri dohvaćanju breakdown-a:', err);
+      res.status(500).json({ error: 'Greška na serveru' });
+      return;
+    }
+    res.json(results);
+  });
+});
