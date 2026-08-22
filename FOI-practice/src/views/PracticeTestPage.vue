@@ -1,5 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 const pitanja = ref([])
 const trenutnoIndex = ref(0)
@@ -8,11 +11,11 @@ const odgovorPotvrden = ref(false)
 const tocniOdgovori = ref(0)
 const testZavrsen = ref(false)
 const ucitavanje = ref(true)
-const vrijemePocetka = ref(null)
+const povijestOdgovora = ref([])
 
 async function dohvatiPitanja() {
   try {
-    const response = await fetch('http://localhost:3000/api/pitanja/javascript/practice')
+    const response = await fetch(`http://localhost:3000/api/pitanja/${route.params.tema}/practice`)
     const data = await response.json()
     pitanja.value = data
   } catch (error) {
@@ -29,9 +32,22 @@ function odaberiOdgovor(slovo) {
 
 function potvrdiOdgovor() {
   const trenutnoPitanje = pitanja.value[trenutnoIndex.value]
-  if (odabranaOdgovor.value === trenutnoPitanje.tocan_odgovor) {
+  const jeTocno = odabranaOdgovor.value === trenutnoPitanje.tocan_odgovor
+
+  if (jeTocno) {
     tocniOdgovori.value++
   }
+
+  povijestOdgovora.value.push({
+    pitanje: trenutnoPitanje.pitanje,
+    odabranoSlovo: odabranaOdgovor.value,
+    odabranoTekst: trenutnoPitanje['odgovor_' + odabranaOdgovor.value.toLowerCase()],
+    tocnoSlovo: trenutnoPitanje.tocan_odgovor,
+    tocnoTekst: trenutnoPitanje['odgovor_' + trenutnoPitanje.tocan_odgovor.toLowerCase()],
+    jeTocno: jeTocno,
+    objasnjenje: trenutnoPitanje.objasnjenje
+  })
+
   odgovorPotvrden.value = true
 }
 
@@ -42,28 +58,12 @@ function sljedecePitanje() {
     odgovorPotvrden.value = false
   } else {
     testZavrsen.value = true
-  const trajanje = Math.round((Date.now() - vrijemePocetka.value) / 1000)
-
-  fetch('http://localhost:3000/api/results', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      type: 'practice',
-      category: 'javascript',
-      level: 'practice',
-      correct_answers: tocniOdgovori.value,
-      total_questions: pitanja.value.length,
-      time_seconds: trajanje
-    })
-  }).catch(err => console.error('Greška pri spremanju rezultata:', err))
   }
 }
 
 onMounted(() => {
-  vrijemePocetka.value = Date.now()
   dohvatiPitanja()
 })
-
 </script>
 
 <template>
@@ -72,12 +72,26 @@ onMounted(() => {
 
     <div v-else-if="testZavrsen" class="practice-rezultat">
       <h2>Vježba završena!</h2>
-      <p>Točno: {{ tocniOdgovori }} / {{ pitanja.length }}</p>
+      <p class="rezultat-brojka">Točno: {{ tocniOdgovori }} / {{ pitanja.length }}</p>
+
+      <div class="pregled-svih-odgovora">
+        <div v-for="(stavka, i) in povijestOdgovora" :key="i" class="pregled-kartica">
+          <p class="pregled-pitanje">{{ i + 1 }}. {{ stavka.pitanje }}</p>
+
+          <div class="pregled-status" :class="stavka.jeTocno ? 'status-tocno' : 'status-netocno'">
+            <span class="status-ikona">{{ stavka.jeTocno ? '✓' : '✕' }}</span>
+            <span>Tvoj odgovor: {{ stavka.odabranoTekst }} — {{ stavka.jeTocno ? 'točno' : 'netočno' }}</span>
+          </div>
+
+          <p v-if="!stavka.jeTocno" class="pregled-tocan">Točan odgovor: {{ stavka.tocnoTekst }}</p>
+          <p class="pregled-objasnjenje">Objašnjenje: {{ stavka.objasnjenje }}</p>
+        </div>
+      </div>
     </div>
 
     <div v-else-if="pitanja.length > 0" class="practice-pitanje">
       <p class="pitanje-broj">Pitanje {{ trenutnoIndex + 1 }} / {{ pitanja.length }}</p>
-      <h3>{{ pitanja[trenutnoIndex].pitanje }}</h3>
+      <h3 style="white-space: pre-wrap; font-family: monospace;">{{ pitanja[trenutnoIndex].pitanje }}</h3>
 
       <div class="odgovori">
         <button

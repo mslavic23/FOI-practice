@@ -9,13 +9,15 @@ import ResultsPage from '../views/ResultsPage.vue'
 
 
 
+
+
 const routes = [
   { path: '/', component: MainPage },
   { path: '/practice', component: PracticePage },
   { path: '/exams', component: ExamPage },
   { path: '/results', component: ResultsPage },
   { path: '/exams/:kategorija/:razina', component: TestPage },
-  { path: '/practice-test', component: PracticeTestPage },
+  { path: '/practice/:tema', component: PracticeTestPage },
 
 ]
 
