@@ -1,4 +1,5 @@
 <script setup>
+import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
 
 const vrijemePocetka = ref(null)
@@ -8,10 +9,11 @@ const odabranaOdgovor = ref(null)
 const tocniOdgovori = ref(0)
 const testZavrsen = ref(false)
 const ucitavanje = ref(true)
+const route = useRoute()
 
 async function dohvatiPitanja() {
   try {
-    const response = await fetch('http://localhost:3000/api/pitanja/frontend/osnovna')
+    const response = await fetch(`http://localhost:3000/api/pitanja/${route.params.kategorija}/${route.params.razina}`)
     const data = await response.json()
     pitanja.value = data
   } catch (error) {
@@ -44,19 +46,16 @@ function potvrdiOdgovor() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       type: 'exam',
-      category: 'frontend',
-      level: 'osnovna',
+      category: route.params.kategorija,
+      level: route.params.razina,
       correct_answers: tocniOdgovori.value,
       total_questions: pitanja.value.length,
       time_seconds: trajanje
-    })
+})
   }).catch(err => console.error('Greška pri spremanju rezultata:', err))
 }
 }
   
-
-
-
 onMounted(() => {
   vrijemePocetka.value = Date.now()
   dohvatiPitanja()
