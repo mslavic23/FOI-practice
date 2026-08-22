@@ -1,4 +1,4 @@
-import TestPage from '../views/TestPage.vue'
+import TestPage from '../views/ExamTestPage.vue'
 import PracticeTestPage from '../views/PracticeTestPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import MainPage from '../views/MainPage.vue'

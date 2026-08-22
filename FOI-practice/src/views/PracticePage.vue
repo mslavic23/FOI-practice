@@ -4,18 +4,18 @@
             <ul class="practice-exams">
                 <li>JavaScript u frontend-u
                 <ul class="practice-front-categories">
-                    <li><a href="#">JavaScript</a></li>
-                    <li><a href="#">DOM</a></li>
-                    <li><a href="#">Frontend framework</a></li>
-                    <li><a href="#">Web stranica</a></li>
+                    <li><router-link to="/practice/javascript">JavaScript</router-link></li>
+                    <li><router-link to="/practice/dom">DOM</router-link></li>
+                    <li><router-link to="/practice/frontendframework">Frontend Framework</router-link></li>
+                    <li><router-link to="/practice/webstranica">Web Stranica</router-link></li>
                 </ul></li>
                 <li>JavaScript u backend-u 
                 <ul class="practice-back-categories">
-                    <li><a href="#">JavaScript na poslužitelju</a></li>
-                    <li><a href="#">Node.js</a></li>
-                    <li><a href="#">Asinkronost</a></li>
-                    <li><a href="#">Event-loop</a></li>
-                    <li><a href="#">Web aplikacija</a></li>
+                    <li><router-link to="/practice/jsposluzitelj">JavaScript na poslužitelju</router-link></li>
+                    <li><router-link to="/practice/nodejs">Node.js</router-link></li>
+                    <li><router-link to="/practice/asinkronost">Asinkronost</router-link></li>
+                    <li><router-link to="/practice/eventloop">Event-loop</router-link></li>
+                    <li><router-link to="/practice/webaplikacija">Web aplikacija</router-link></li>
                 </ul>
                 </li>
             </ul>
