@@ -1,17 +1,44 @@
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const ukupnoRijeseno = ref(0)
+const prosjecnoVrijeme = ref(0)
+const postotakTocnosti = ref(0)
+const ucitavanje = ref(true)
+
+async function dohvatiSazetak() {
+  try {
+    const response = await fetch('http://localhost:3000/api/results/summary')
+    const data = await response.json()
+    ukupnoRijeseno.value = data.total_solved || 0
+    prosjecnoVrijeme.value = data.avg_time ? Math.round(data.avg_time) : 0
+    postotakTocnosti.value = data.avg_accuracy ? Math.round(data.avg_accuracy) : 0
+  } catch (error) {
+    console.error('Greška pri dohvaćanju sažetka:', error)
+  } finally {
+    ucitavanje.value = false
+  }
+}
+
+onMounted(() => {
+  dohvatiSazetak()
+})
+</script>
+
 <template>
   <section class="results-page">
     <div class="result-page-exam-info">
       <div class="exam-number-result">
         <p>Broj rjesenih ispita</p>
-        <p>4</p>
+        <p>{{ ukupnoRijeseno }}</p>
       </div>
       <div class="exam-length-result">
-        <p>Prosječno vrijeme rijesavanja</p>
-        <p>6 min</p>
+        <p>Prosjecno vrijeme rjesavanja</p>
+        <p>{{ prosjecnoVrijeme }} sek</p>
       </div>
       <div class="exam-percentage-result">
         <p>Postotak tocnosti</p>
-        <p>50%</p>
+        <p>{{ postotakTocnosti }}%</p>
       </div>
     </div>
 

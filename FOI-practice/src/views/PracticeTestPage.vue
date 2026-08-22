@@ -8,6 +8,7 @@ const odgovorPotvrden = ref(false)
 const tocniOdgovori = ref(0)
 const testZavrsen = ref(false)
 const ucitavanje = ref(true)
+const vrijemePocetka = ref(null)
 
 async function dohvatiPitanja() {
   try {
@@ -41,12 +42,28 @@ function sljedecePitanje() {
     odgovorPotvrden.value = false
   } else {
     testZavrsen.value = true
+  const trajanje = Math.round((Date.now() - vrijemePocetka.value) / 1000)
+
+  fetch('http://localhost:3000/api/results', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: 'practice',
+      category: 'javascript',
+      level: 'practice',
+      correct_answers: tocniOdgovori.value,
+      total_questions: pitanja.value.length,
+      time_seconds: trajanje
+    })
+  }).catch(err => console.error('Greška pri spremanju rezultata:', err))
   }
 }
 
 onMounted(() => {
+  vrijemePocetka.value = Date.now()
   dohvatiPitanja()
 })
+
 </script>
 
 <template>

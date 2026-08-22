@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
+const vrijemePocetka = ref(null)
 const pitanja = ref([])
 const trenutnoIndex = ref(0)
 const odabranaOdgovor = ref(null)
@@ -30,17 +31,37 @@ function potvrdiOdgovor() {
     tocniOdgovori.value++
   }
 
+
   if (trenutnoIndex.value < pitanja.value.length - 1) {
     trenutnoIndex.value++
     odabranaOdgovor.value = null
   } else {
     testZavrsen.value = true
-  }
+    const trajanje = Math.round((Date.now() - vrijemePocetka.value) / 1000)
+
+  fetch('http://localhost:3000/api/results', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: 'exam',
+      category: 'frontend',
+      level: 'osnovna',
+      correct_answers: tocniOdgovori.value,
+      total_questions: pitanja.value.length,
+      time_seconds: trajanje
+    })
+  }).catch(err => console.error('Greška pri spremanju rezultata:', err))
 }
+}
+  
+
+
 
 onMounted(() => {
+  vrijemePocetka.value = Date.now()
   dohvatiPitanja()
 })
+
 </script>
 
 <template>
