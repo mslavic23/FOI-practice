@@ -14,8 +14,9 @@ const routes = [
   { path: '/practice', component: PracticePage },
   { path: '/exams', component: ExamPage },
   { path: '/results', component: ResultsPage },
-  { path: '/test', component: TestPage },
+  { path: '/exams/:kategorija/:razina', component: TestPage },
   { path: '/practice-test', component: PracticeTestPage },
+
 ]
 
 const router = createRouter({

@@ -74,7 +74,7 @@ onMounted(() => {
 
     <div v-else-if="pitanja.length > 0" class="test-pitanje">
       <p class="pitanje-broj">Pitanje {{ trenutnoIndex + 1 }} / {{ pitanja.length }}</p>
-      <h3>{{ pitanja[trenutnoIndex].pitanje }}</h3>
+      <h3 class="pitanje-tekst" style="white-space: pre-wrap; font-family: monospace;">{{ pitanja[trenutnoIndex].pitanje }}</h3>
 
       <div class="odgovori">
         <button
