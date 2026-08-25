@@ -12,7 +12,7 @@ const tocniOdgovori = ref(0)
 const testZavrsen = ref(false)
 const ucitavanje = ref(true)
 
-const preostaloSekundi = ref(120)
+const preostaloSekundi = ref(160)
 const zavrsnoVrijeme = ref(null)
 let timerId = null
 

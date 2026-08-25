@@ -7,11 +7,11 @@
       </div>
       <div class="exam-length-info">
         <p>Prosječno vrijeme</p>
-        <p>10 min</p>
+        <p>2 min</p>
       </div>
       <div class="exam-access-info">
         <p>Broj pokušaja</p>
-        <p>5</p>
+        <p>∞</p>
       </div>
     </div>
     <div class="exam-page-exams">
