@@ -1,4 +1,4 @@
-/* ===== RESET ===== */
+
 * {
   box-sizing: border-box;
 }
@@ -8,7 +8,7 @@ body {
   padding: 0;
 }
 
-/* ===== HEADER ===== */
+
 header {
   display: flex;
   align-items: center;
@@ -43,6 +43,11 @@ header h1 {
   font-size: 1.5rem;
 }
 
+header h1 a {
+  color: inherit;
+  text-decoration: none;
+}
+
 nav.foi-header-left {
   order: 3;
   flex: 1;
@@ -72,18 +77,28 @@ nav.foi-header-left a:hover {
   color: #666;
 }
 
-/* ===== MAIN PAGE (hero) ===== */
-.main-page img:first-child {
+
+
+
+
+
+
+main {
+  padding-top: 80px;   
+}
+
+.main-page > img:first-child {
   display: block;
   width: 100%;
   height: auto;
+  margin-top: -80px;
 }
 
 .main-intro {
   display: block;
   width: 60%;
   height: auto;
-  margin: 10rem auto;
+  margin: 12rem auto;
 }
 
 .main-links {
@@ -103,25 +118,52 @@ nav.foi-header-left a:hover {
   text-align: center;
 }
 
+.main-link-item .image-wrapper {
+  position: relative;
+  width: 280px;
+  height: 280px;
+}
+
 .main-link-item img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
+  width: 280px;
+  height: 280px;
+  object-fit: contain;
   border-radius: 8px;
+  display: block;
 }
 
-.main-link-item .link-title {
-  margin: 0.75rem 0 0.25rem 0;
+.image-center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+.image-center-text .link-title {
+  margin: 0 0 0.25rem 0;
   font-weight: bold;
+  color: #1a1a1a;
 }
 
-.main-link-item .link-desc {
+.image-center-text .link-desc {
   margin: 0;
   font-size: 0.85rem;
-  color: #666;
+  color: #333;
 }
 
-/* ===== FOOTER ===== */
+
+
+
+
+
+
+
+
+
 footer {
   background-color: #1a1a1a;
   color: #ffffff;
@@ -135,7 +177,11 @@ footer p {
   opacity: 0.8;
 }
 
-/* ===== TEST / PRACTICE ODGOVORI ===== */
+
+
+
+
+
 .tocanOdg {
   background-color: #d4edda;
   border-color: #28a745;
@@ -153,7 +199,19 @@ footer p {
   border-radius: 8px;
 }
 
-/* ===== PREGLED REZULTATA VJEZBE ===== */
+
+
+
+
+
+
+
+
+
+
+
+
+
 .rezultat-brojka {
   font-size: 1.1rem;
   font-weight: bold;
@@ -209,7 +267,15 @@ footer p {
   margin: 0;
 }
 
-/* ===== GRAFOVI (CSS TRAKE) - RESULTS PAGE ===== */
+
+
+
+
+
+
+
+
+
 .chart-stupac {
   margin-bottom: 1rem;
 }
@@ -249,4 +315,290 @@ footer p {
   width: 40px;
   text-align: right;
   flex-shrink: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.exam-page-exam-info,
+.result-page-exam-info {
+  display: flex;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.exam-page-exam-info > div,
+.result-page-exam-info > div {
+  flex: 1;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.exam-page-exam-info p:first-child,
+.result-page-exam-info p:first-child {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0 0 0.4rem 0;
+}
+
+.exam-page-exam-info p:last-child,
+.result-page-exam-info p:last-child {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin: 0;
+  color: #222;
+}
+
+
+
+
+
+
+
+
+
+
+
+.exam-page-exams{
+    padding: 5rem 2rem 8rem 2rem;
+}
+.practice-page-exams {
+  padding: 5rem 2rem 12rem 2rem;
+}
+
+.exam-category,
+.practice-exams {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 2rem;
+}
+
+.exam-category > li,
+.practice-exams > li {
+  flex: 1;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  font-weight: bold;
+  color: #222;
+}
+
+.exam-levels-js-front,
+.exam-levels-js-back,
+.practice-front-categories,
+.practice-back-categories {
+  list-style: none;
+  margin: 1rem 0 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: normal;
+}
+
+.exam-levels-js-front a,
+.exam-levels-js-back a,
+.practice-front-categories a,
+.practice-back-categories a {
+  display: block;
+  padding: 0.6rem 1rem;
+  background-color: #f0f4fa;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #2c5aa0;
+  font-weight: 500;
+}
+
+.exam-levels-js-front a:hover,
+.exam-levels-js-back a:hover,
+.practice-front-categories a:hover,
+.practice-back-categories a:hover {
+  background-color: #dde8f7;
+}
+
+
+
+
+
+
+
+
+.practice-results h4,
+.exam-results h4 {
+  text-align: center;
+  max-width: 570px;
+  margin: 0 auto 3rem auto;
+}
+
+
+
+
+
+.stat-details {
+  padding: 4rem 2rem 8rem 2rem;
+}
+
+
+.vjezbe-testovi-grid {
+  display: flex;
+  gap: 8.5rem;
+}
+
+.stat-details h3 {
+  margin-bottom: 6.5rem;
+  text-align: center;
+  width: 100%;
+}
+
+
+.vjezbe-testovi-grid > div {
+  flex: 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.pie-red {
+  display: flex;
+  gap: 2rem;
+}
+
+.pie-blok {
+  flex: 1;
+  text-align: center;
+}
+
+.pie-naslov {
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+}
+
+.pie-krug {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  margin: 0 auto 1rem auto;
+}
+
+.pie-legenda {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  font-size: 0.85rem;
+  text-align: left;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.25rem 1rem;
+  max-width: 320px;
+}
+
+.pie-legenda li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 0;
+}
+
+.pie-boja {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+
+
+
+
+
+
+
+
+
+
+.line-chart-wrapper {
+  display: flex;
+  gap: 0.75rem;
+  max-width: 670px;
+  align-items: flex-start;
+  margin-top: 5em;
+}
+
+.line-y-os {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #999;
+  height: 160px;
+  padding-bottom: 0;
+}
+
+.line-chart-inner {
+  flex: 1;
+}
+
+.line-chart {
+  width: 100%;
+  height: 160px;
+}
+
+.line-oznake {
+  display: flex;
+  justify-content: space-around;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.5rem;
+  text-transform: capitalize;
+}
+
+.line-legenda {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+}
+
+.line-legenda span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
+
+
+
+
+
+
+.exam-stat-chart,
+.practice-stat-chart {
+  padding: 1rem 2rem;
 }

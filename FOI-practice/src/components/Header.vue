@@ -1,12 +1,10 @@
 <template>
   <header>
     <div class="foi-logo">
-      <router-link to="/">
         <img src="../assets/foi-logo.png" alt="FOI logo">
-      </router-link>
     </div>
 
-    <h1>FOI PRACTICE</h1>
+    <h1><router-link to="/">FOI PRACTICE</router-link></h1>
 
     <nav class="foi-header-left">
       <ul class="left-header">
