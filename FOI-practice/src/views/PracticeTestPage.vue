@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -61,6 +61,13 @@ function sljedecePitanje() {
   }
 }
 
+const pitanjeDio = computed(() => {
+  const puni = pitanja.value[trenutnoIndex.value]?.pitanje || ''
+  const idx = puni.indexOf('\n\n')
+  if (idx === -1) return { tekst: puni, kod: null }
+  return { tekst: puni.slice(0, idx), kod: puni.slice(idx + 2) }
+})
+
 onMounted(() => {
   dohvatiPitanja()
 })
@@ -91,7 +98,8 @@ onMounted(() => {
 
     <div v-else-if="pitanja.length > 0" class="practice-pitanje">
       <p class="pitanje-broj">Pitanje {{ trenutnoIndex + 1 }} / {{ pitanja.length }}</p>
-      <h3 style="white-space: pre-wrap; font-family: monospace;">{{ pitanja[trenutnoIndex].pitanje }}</h3>
+      <h3>{{ pitanjeDio.tekst }}</h3>
+      <pre v-if="pitanjeDio.kod" class="pitanje-kod">{{ pitanjeDio.kod }}</pre>
 
       <div class="odgovori">
         <button

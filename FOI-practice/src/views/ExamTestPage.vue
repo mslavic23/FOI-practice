@@ -64,7 +64,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="test-page">
+  <section class="oexam-test-page">
     <div v-if="ucitavanje">Učitavam pitanja...</div>
 
     <div v-else-if="testZavrsen" class="test-rezultat">
