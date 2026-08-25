@@ -36,7 +36,7 @@ function oznakaZaPostotak(postotak) {
 
 async function dohvatiSazetak() {
   try {
-    const response = await fetch('http://localhost:3000/api/results/summary')
+    const response = await fetch('http://localhost:3000/api/results/summary', { cache: 'no-store' })
     const data = await response.json()
     ukupnoRijeseno.value = data.total_solved || 0
     prosjecnoVrijeme.value = data.avg_time ? Math.round(data.avg_time) : 0
@@ -48,7 +48,7 @@ async function dohvatiSazetak() {
 
 async function dohvatiBreakdown() {
   try {
-    const response = await fetch('http://localhost:3000/api/results/breakdown')
+    const response = await fetch('http://localhost:3000/api/results/breakdown', { cache: 'no-store' })
     breakdown.value = await response.json()
   } catch (error) {
     console.error('Greška pri dohvaćanju breakdowna:', error)

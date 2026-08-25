@@ -20,14 +20,14 @@
           <ul class="exam-levels-js-front">
             <li><router-link to="/exams/frontend/osnovna">Osnovna razina</router-link></li>
             <li><router-link to="/exams/frontend/umjerena">Umjerena razina</router-link></li>
-            <li><router-link to="/exams/frontend(napredna)">Napredna razina</router-link></li>
+            <li><router-link to="/exams/frontend/napredna">Napredna razina</router-link></li>
           </ul>
         </li>
         <li>JavaScript u back-end-u
           <ul class="exam-levels-js-back">
             <li><router-link to="/exams/backend/osnovna">Osnovna razina</router-link></li>
             <li><router-link to="/exams/backend/umjerena">Umjerena razina</router-link></li>
-            <li><router-link to="/exams/backend(napredna)">Napredna razina</router-link></li>
+            <li><router-link to="/exams/backend/napredna">Napredna razina</router-link></li>
           </ul>
         </li>
       </ul>

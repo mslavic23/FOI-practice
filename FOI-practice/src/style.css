@@ -704,3 +704,40 @@ footer p {
   margin-bottom: 1.5rem;
   text-align: center;
 }
+
+.timer-fiksni {
+  position: fixed;
+  top: 100px;
+  right: 4rem;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 1.1rem;
+  color: #026726;
+  z-index: 50;
+}
+
+.timer-fiksni.timer-hitno {
+  color: #c0392b;
+  border-color: #c0392b;
+}
+
+.zavrsno-vrijeme {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  font-family: monospace;
+  margin-bottom: 2.5rem;
+}
+
+.vrijeme-zeleno {
+  color: #026726;
+}
+
+.vrijeme-zuto {
+  color: #d2b670;
+}
+

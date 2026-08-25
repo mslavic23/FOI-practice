@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 
+const vrijemePocetka = ref(null)
 const pitanja = ref([])
 const trenutnoIndex = ref(0)
 const odabranaOdgovor = ref(null)
@@ -15,7 +16,7 @@ const povijestOdgovora = ref([])
 
 async function dohvatiPitanja() {
   try {
-    const response = await fetch(`http://localhost:3000/api/pitanja/${route.params.tema}/practice`)
+    const response = await fetch(`http://localhost:3000/api/pitanja/${route.params.tema}/practice`, { cache: 'no-store' })
     const data = await response.json()
     pitanja.value = data
   } catch (error) {
@@ -58,6 +59,20 @@ function sljedecePitanje() {
     odgovorPotvrden.value = false
   } else {
     testZavrsen.value = true
+    const trajanje = Math.round((Date.now() - vrijemePocetka.value) / 1000)
+
+    fetch('http://localhost:3000/api/results', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'practice',
+        category: route.params.tema,
+        level: 'practice',
+        correct_answers: tocniOdgovori.value,
+        total_questions: pitanja.value.length,
+        time_seconds: trajanje
+      })
+    }).catch(err => console.error('Greška pri spremanju rezultata:', err))
   }
 }
 
@@ -69,6 +84,7 @@ const pitanjeDio = computed(() => {
 })
 
 onMounted(() => {
+  vrijemePocetka.value = Date.now()
   dohvatiPitanja()
 })
 </script>
