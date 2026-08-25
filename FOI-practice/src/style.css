@@ -188,17 +188,17 @@ footer p {
 
 
 
-.tocanOdg {
+.correctAnswer {
   background-color: #d4edda;
   border-color: #28a745;
 }
 
-.krivOdg {
+.wrongAnswer {
   background-color: #f8d7da;
   border-color: #dc3545;
 }
 
-.objasnjenje-box {
+.explanation-box {
   margin-top: 1rem;
   padding: 1rem;
   background-color: #f5f5f5;
@@ -218,14 +218,14 @@ footer p {
 
 
 
-.rezultat-brojka {
+.result-count {
   font-size: 1.1rem;
   font-weight: bold;
   margin-bottom: 3rem;
   text-align: center;
 }
 
-.pregled-svih-odgovora {
+.review-all-answers {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -233,19 +233,19 @@ footer p {
 
 
 
-.pregled-kartica {
+.review-card {
   background-color: transparent;
   border-radius: 0;
   padding: 0.75rem 0;
   border-bottom: none;
 }
 
-.pregled-pitanje {
+.review-question {
   font-weight: 500;
   margin: 0 0 8px 0;
 }
 
-.pregled-status {
+.review-status {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -253,25 +253,25 @@ footer p {
   margin-bottom: 6px;
 }
 
-.status-tocno {
+.status-correct {
   color: #1a7a3d;
 }
 
-.status-netocno {
+.status-incorrect {
   color: #c0392b;
 }
 
-.status-ikona {
+.status-icon {
   font-weight: bold;
 }
 
-.pregled-tocan {
+.review-correct {
   font-size: 0.9rem;
   color: #555;
   margin: 0 0 6px 0;
 }
 
-.pregled-objasnjenje {
+.review-explanation {
   font-size: 0.9rem;
   color: #555;
   margin: 0;
@@ -286,16 +286,16 @@ footer p {
 
 
 
-.chart-stupac {
+.chart-column {
   margin-bottom: 1rem;
 }
 
-.chart-naslov {
+.chart-title {
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
 
-.chart-red {
+.chart-row {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -308,7 +308,7 @@ footer p {
   flex-shrink: 0;
 }
 
-.chart-traka-pozadina {
+.chart-bar-background {
   flex: 1;
   height: 16px;
   background-color: #eee;
@@ -316,12 +316,12 @@ footer p {
   overflow: hidden;
 }
 
-.chart-traka {
+.chart-bar {
   height: 100%;
   background-color: #4a90d9;
 }
 
-.chart-vrijednost {
+.chart-value {
   width: 40px;
   text-align: right;
   flex-shrink: 0;
@@ -465,7 +465,7 @@ footer p {
 }
 
 
-.vjezbe-testovi-grid {
+.practice-tests-grid {
   display: flex;
   gap: 8.5rem;
 }
@@ -477,7 +477,7 @@ footer p {
 }
 
 
-.vjezbe-testovi-grid > div {
+.practice-tests-grid > div {
   flex: 1;
 }
 
@@ -492,29 +492,29 @@ footer p {
 
 
 
-.pie-red {
+.pie-row {
   display: flex;
   gap: 2rem;
 }
 
-.pie-blok {
+.pie-block {
   flex: 1;
   text-align: center;
 }
 
-.pie-naslov {
+.pie-title {
   font-weight: bold;
   margin-bottom: 0.75rem;
 }
 
-.pie-krug {
+.pie-circle {
   width: 140px;
   height: 140px;
   border-radius: 50%;
   margin: 0 auto 1rem auto;
 }
 
-.pie-legenda {
+.pie-legend {
   list-style: none;
   margin: 0 auto;
   padding: 0;
@@ -526,14 +526,14 @@ footer p {
   max-width: 320px;
 }
 
-.pie-legenda li {
+.pie-legend li {
   display: flex;
   align-items: center;
   gap: 6px;
   margin-bottom: 0;
 }
 
-.pie-boja {
+.pie-color {
   width: 12px;
   height: 12px;
   border-radius: 3px;
@@ -559,7 +559,7 @@ footer p {
   margin-top: 5em;
 }
 
-.line-y-os {
+.line-y-axis {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -578,7 +578,7 @@ footer p {
   height: 160px;
 }
 
-.line-oznake {
+.line-labels {
   display: flex;
   justify-content: space-around;
   font-size: 0.8rem;
@@ -587,7 +587,7 @@ footer p {
   text-transform: capitalize;
 }
 
-.line-legenda {
+.line-legend {
   display: flex;
   justify-content: center;
   gap: 1.5rem;
@@ -595,7 +595,7 @@ footer p {
   margin-top: 1rem;
 }
 
-.line-legenda span {
+.line-legend span {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -621,7 +621,7 @@ footer p {
   padding: 5rem 2rem 8rem 2rem;
 }
 
-.pitanje-broj {
+.question-number {
   font-size: 0.9rem;
   color: #666;
   margin-bottom: 1rem;
@@ -634,7 +634,7 @@ footer p {
   line-height: 1.6;
 }
 
-.pitanje-kod {
+.question-code {
   font-size: 0.8em;
   font-family: monospace;
   white-space: pre-wrap;
@@ -644,14 +644,14 @@ footer p {
   margin: 0 0 2rem 0;
 }
 
-.odgovori {
+.answers {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   margin-bottom: 2.5rem;
 }
 
-.odgovori button {
+.answers button {
   text-align: left;
   padding: 0.7rem 1.25rem;
   border: 1px solid #ddd;
@@ -662,16 +662,16 @@ footer p {
   transition: background-color 0.15s;
 }
 
-.odgovori button:hover {
+.answers button:hover {
   background-color: #f5f8fc;
 }
 
-.odgovori button.odabran {
+.answers button.selected {
   border-color: #4a90d9;
   background-color: #eaf2fb;
 }
 
-.potvrdi-btn {
+.confirm-btn {
   padding: 0.65rem 1.75rem;
   background-color: #4a90d9;
   color: #fff;
@@ -682,30 +682,30 @@ footer p {
   cursor: pointer;
 }
 
-.potvrdi-btn:disabled {
+.confirm-btn:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
-.potvrdi-btn:hover:not(:disabled) {
+.confirm-btn:hover:not(:disabled) {
   background-color: #3a7bc0;
 }
 
-.test-rezultat,
-.practice-rezultat {
+.test-result,
+.practice-result {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0rem 2rem 0 2rem;
   text-align: left;
 }
 
-.test-rezultat h2,
-.practice-rezultat h2 {
+.test-result h2,
+.practice-result h2 {
   margin-bottom: 1.5rem;
   text-align: center;
 }
 
-.timer-fiksni {
+.timer-fixed {
   position: fixed;
   top: 100px;
   right: 4rem;
@@ -720,12 +720,12 @@ footer p {
   z-index: 50;
 }
 
-.timer-fiksni.timer-hitno {
+.timer-fixed.timer-urgent {
   color: #c0392b;
   border-color: #c0392b;
 }
 
-.zavrsno-vrijeme {
+.final-time {
   text-align: center;
   font-size: 1.8rem;
   font-weight: bold;
@@ -733,11 +733,10 @@ footer p {
   margin-bottom: 2.5rem;
 }
 
-.vrijeme-zeleno {
+.time-green {
   color: #026726;
 }
 
-.vrijeme-zuto {
+.time-yellow {
   color: #d2b670;
 }
-

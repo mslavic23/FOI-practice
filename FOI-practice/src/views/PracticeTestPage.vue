@@ -4,62 +4,62 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 
-const vrijemePocetka = ref(null)
-const pitanja = ref([])
-const trenutnoIndex = ref(0)
-const odabranaOdgovor = ref(null)
-const odgovorPotvrden = ref(false)
-const tocniOdgovori = ref(0)
-const testZavrsen = ref(false)
-const ucitavanje = ref(true)
-const povijestOdgovora = ref([])
+const startTime = ref(null)
+const questions = ref([])
+const currentIndex = ref(0)
+const selectedAnswer = ref(null)
+const answerConfirmed = ref(false)
+const correctAnswers = ref(0)
+const testFinished = ref(false)
+const loading = ref(true)
+const answerHistory = ref([])
 
-async function dohvatiPitanja() {
+async function fetchQuestions() {
   try {
     const response = await fetch(`http://localhost:3000/api/pitanja/${route.params.tema}/practice`, { cache: 'no-store' })
     const data = await response.json()
-    pitanja.value = data
+    questions.value = data
   } catch (error) {
     console.error('Greška pri dohvaćanju pitanja:', error)
   } finally {
-    ucitavanje.value = false
+    loading.value = false
   }
 }
 
-function odaberiOdgovor(slovo) {
-  if (odgovorPotvrden.value) return
-  odabranaOdgovor.value = slovo
+function selectAnswer(letter) {
+  if (answerConfirmed.value) return
+  selectedAnswer.value = letter
 }
 
-function potvrdiOdgovor() {
-  const trenutnoPitanje = pitanja.value[trenutnoIndex.value]
-  const jeTocno = odabranaOdgovor.value === trenutnoPitanje.tocan_odgovor
+function confirmAnswer() {
+  const currentQuestion = questions.value[currentIndex.value]
+  const isCorrect = selectedAnswer.value === currentQuestion.tocan_odgovor
 
-  if (jeTocno) {
-    tocniOdgovori.value++
+  if (isCorrect) {
+    correctAnswers.value++
   }
 
-  povijestOdgovora.value.push({
-    pitanje: trenutnoPitanje.pitanje,
-    odabranoSlovo: odabranaOdgovor.value,
-    odabranoTekst: trenutnoPitanje['odgovor_' + odabranaOdgovor.value.toLowerCase()],
-    tocnoSlovo: trenutnoPitanje.tocan_odgovor,
-    tocnoTekst: trenutnoPitanje['odgovor_' + trenutnoPitanje.tocan_odgovor.toLowerCase()],
-    jeTocno: jeTocno,
-    objasnjenje: trenutnoPitanje.objasnjenje
+  answerHistory.value.push({
+    question: currentQuestion.pitanje,
+    selectedLetter: selectedAnswer.value,
+    selectedText: currentQuestion['odgovor_' + selectedAnswer.value.toLowerCase()],
+    correctLetter: currentQuestion.tocan_odgovor,
+    correctText: currentQuestion['odgovor_' + currentQuestion.tocan_odgovor.toLowerCase()],
+    isCorrect: isCorrect,
+    explanation: currentQuestion.objasnjenje
   })
 
-  odgovorPotvrden.value = true
+  answerConfirmed.value = true
 }
 
-function sljedecePitanje() {
-  if (trenutnoIndex.value < pitanja.value.length - 1) {
-    trenutnoIndex.value++
-    odabranaOdgovor.value = null
-    odgovorPotvrden.value = false
+function nextQuestion() {
+  if (currentIndex.value < questions.value.length - 1) {
+    currentIndex.value++
+    selectedAnswer.value = null
+    answerConfirmed.value = false
   } else {
-    testZavrsen.value = true
-    const trajanje = Math.round((Date.now() - vrijemePocetka.value) / 1000)
+    testFinished.value = true
+    const duration = Math.round((Date.now() - startTime.value) / 1000)
 
     fetch('http://localhost:3000/api/results', {
       method: 'POST',
@@ -68,91 +68,91 @@ function sljedecePitanje() {
         type: 'practice',
         category: route.params.tema,
         level: 'practice',
-        correct_answers: tocniOdgovori.value,
-        total_questions: pitanja.value.length,
-        time_seconds: trajanje
+        correct_answers: correctAnswers.value,
+        total_questions: questions.value.length,
+        time_seconds: duration
       })
     }).catch(err => console.error('Greška pri spremanju rezultata:', err))
   }
 }
 
-const pitanjeDio = computed(() => {
-  const puni = pitanja.value[trenutnoIndex.value]?.pitanje || ''
-  const idx = puni.indexOf('\n\n')
-  if (idx === -1) return { tekst: puni, kod: null }
-  return { tekst: puni.slice(0, idx), kod: puni.slice(idx + 2) }
+const questionPart = computed(() => {
+  const full = questions.value[currentIndex.value]?.pitanje || ''
+  const idx = full.indexOf('\n\n')
+  if (idx === -1) return { text: full, code: null }
+  return { text: full.slice(0, idx), code: full.slice(idx + 2) }
 })
 
 onMounted(() => {
-  vrijemePocetka.value = Date.now()
-  dohvatiPitanja()
+  startTime.value = Date.now()
+  fetchQuestions()
 })
 </script>
 
 <template>
   <section class="practice-test-page">
-    <div v-if="ucitavanje">Učitavam pitanja...</div>
+    <div v-if="loading">Učitavam pitanja...</div>
 
-    <div v-else-if="testZavrsen" class="practice-rezultat">
+    <div v-else-if="testFinished" class="practice-result">
       <h2>Vježba završena!</h2>
-      <p class="rezultat-brojka">Točno: {{ tocniOdgovori }} / {{ pitanja.length }}</p>
+      <p class="result-count">Točno: {{ correctAnswers }} / {{ questions.length }}</p>
 
-      <div class="pregled-svih-odgovora">
-        <div v-for="(stavka, i) in povijestOdgovora" :key="i" class="pregled-kartica">
-          <p class="pregled-pitanje">{{ i + 1 }}. {{ stavka.pitanje }}</p>
+      <div class="review-all-answers">
+        <div v-for="(item, i) in answerHistory" :key="i" class="review-card">
+          <p class="review-question">{{ i + 1 }}. {{ item.question }}</p>
 
-          <div class="pregled-status" :class="stavka.jeTocno ? 'status-tocno' : 'status-netocno'">
-            <span class="status-ikona">{{ stavka.jeTocno ? '✓' : '✕' }}</span>
-            <span>Tvoj odgovor: {{ stavka.odabranoTekst }} — {{ stavka.jeTocno ? 'točno' : 'netočno' }}</span>
+          <div class="review-status" :class="item.isCorrect ? 'status-correct' : 'status-incorrect'">
+            <span class="status-icon">{{ item.isCorrect ? '✓' : '✕' }}</span>
+            <span>Tvoj odgovor: {{ item.selectedText }} — {{ item.isCorrect ? 'točno' : 'netočno' }}</span>
           </div>
 
-          <p v-if="!stavka.jeTocno" class="pregled-tocan">Točan odgovor: {{ stavka.tocnoTekst }}</p>
-          <p class="pregled-objasnjenje">Objašnjenje: {{ stavka.objasnjenje }}</p>
+          <p v-if="!item.isCorrect" class="review-correct">Točan odgovor: {{ item.correctText }}</p>
+          <p class="review-explanation">Objašnjenje: {{ item.explanation }}</p>
         </div>
       </div>
     </div>
 
-    <div v-else-if="pitanja.length > 0" class="practice-pitanje">
-      <p class="pitanje-broj">Pitanje {{ trenutnoIndex + 1 }} / {{ pitanja.length }}</p>
-      <h3>{{ pitanjeDio.tekst }}</h3>
-      <pre v-if="pitanjeDio.kod" class="pitanje-kod">{{ pitanjeDio.kod }}</pre>
+    <div v-else-if="questions.length > 0" class="practice-question">
+      <p class="question-number">Pitanje {{ currentIndex + 1 }} / {{ questions.length }}</p>
+      <h3>{{ questionPart.text }}</h3>
+      <pre v-if="questionPart.code" class="question-code">{{ questionPart.code }}</pre>
 
-      <div class="odgovori">
+      <div class="answers">
         <button
-          v-for="slovo in ['A', 'B', 'C']"
-          :key="slovo"
+          v-for="letter in ['A', 'B', 'C']"
+          :key="letter"
           :class="{
-            odabran: odabranaOdgovor === slovo && !odgovorPotvrden,
-            tocanOdg: odgovorPotvrden && slovo === pitanja[trenutnoIndex].tocan_odgovor,
-            krivOdg: odgovorPotvrden && odabranaOdgovor === slovo && slovo !== pitanja[trenutnoIndex].tocan_odgovor
+            selected: selectedAnswer === letter && !answerConfirmed,
+            correctAnswer: answerConfirmed && letter === questions[currentIndex].tocan_odgovor,
+            wrongAnswer: answerConfirmed && selectedAnswer === letter && letter !== questions[currentIndex].tocan_odgovor
           }"
-          @click="odaberiOdgovor(slovo)"
+          @click="selectAnswer(letter)"
         >
-          {{ pitanja[trenutnoIndex]['odgovor_' + slovo.toLowerCase()] }}
+          {{ questions[currentIndex]['odgovor_' + letter.toLowerCase()] }}
         </button>
       </div>
 
-      <div v-if="odgovorPotvrden" class="objasnjenje-box">
+      <div v-if="answerConfirmed" class="explanation-box">
         <p>
-          <strong>{{ odabranaOdgovor === pitanja[trenutnoIndex].tocan_odgovor ? 'Točno!' : 'Netočno.' }}</strong>
+          <strong>{{ selectedAnswer === questions[currentIndex].tocan_odgovor ? 'Točno!' : 'Netočno.' }}</strong>
         </p>
-        <p>{{ pitanja[trenutnoIndex].objasnjenje }}</p>
+        <p>{{ questions[currentIndex].objasnjenje }}</p>
       </div>
 
       <button
-        v-if="!odgovorPotvrden"
-        class="potvrdi-btn"
-        :disabled="!odabranaOdgovor"
-        @click="potvrdiOdgovor"
+        v-if="!answerConfirmed"
+        class="confirm-btn"
+        :disabled="!selectedAnswer"
+        @click="confirmAnswer"
       >
         Potvrdi
       </button>
       <button
         v-else
-        class="potvrdi-btn"
-        @click="sljedecePitanje"
+        class="confirm-btn"
+        @click="nextQuestion"
       >
-        {{ trenutnoIndex < pitanja.length - 1 ? 'Sljedeće pitanje' : 'Završi vježbu' }}
+        {{ currentIndex < questions.length - 1 ? 'Sljedeće pitanje' : 'Završi vježbu' }}
       </button>
     </div>
 

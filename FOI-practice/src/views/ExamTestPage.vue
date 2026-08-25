@@ -4,36 +4,36 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 
 const route = useRoute()
 
-const vrijemePocetka = ref(null)
-const pitanja = ref([])
-const trenutnoIndex = ref(0)
-const odabranaOdgovor = ref(null)
-const tocniOdgovori = ref(0)
-const testZavrsen = ref(false)
-const ucitavanje = ref(true)
+const startTime = ref(null)
+const questions = ref([])
+const currentIndex = ref(0)
+const selectedAnswer = ref(null)
+const correctAnswers = ref(0)
+const testFinished = ref(false)
+const loading = ref(true)
 
-const preostaloSekundi = ref(160)
-const zavrsnoVrijeme = ref(null)
+const remainingSeconds = ref(150)
+const finalTime = ref(null)
 let timerId = null
 
-async function dohvatiPitanja() {
+async function fetchQuestions() {
   try {
     const response = await fetch(`http://localhost:3000/api/pitanja/${route.params.kategorija}/${route.params.razina}`)
     const data = await response.json()
-    pitanja.value = data
+    questions.value = data
   } catch (error) {
     console.error('Greška pri dohvaćanju pitanja:', error)
   } finally {
-    ucitavanje.value = false
+    loading.value = false
   }
 }
 
-function odaberiOdgovor(slovo) {
-  odabranaOdgovor.value = slovo
+function selectAnswer(letter) {
+  selectedAnswer.value = letter
 }
 
-function posaljiRezultat(preostalo) {
-  const trajanje = 120 - preostalo
+function submitResult(remaining) {
+  const duration = 150 - remaining
   fetch('http://localhost:3000/api/results', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -41,71 +41,71 @@ function posaljiRezultat(preostalo) {
       type: 'exam',
       category: route.params.kategorija,
       level: route.params.razina,
-      correct_answers: tocniOdgovori.value,
-      total_questions: pitanja.value.length,
-      time_seconds: trajanje
+      correct_answers: correctAnswers.value,
+      total_questions: questions.value.length,
+      time_seconds: duration
     })
   }).catch(err => console.error('Greška pri spremanju rezultata:', err))
 }
 
-function potvrdiOdgovor() {
-  const trenutnoPitanje = pitanja.value[trenutnoIndex.value]
-  if (odabranaOdgovor.value === trenutnoPitanje.tocan_odgovor) {
-    tocniOdgovori.value++
+function confirmAnswer() {
+  const currentQuestion = questions.value[currentIndex.value]
+  if (selectedAnswer.value === currentQuestion.tocan_odgovor) {
+    correctAnswers.value++
   }
 
-  if (trenutnoIndex.value < pitanja.value.length - 1) {
-    trenutnoIndex.value++
-    odabranaOdgovor.value = null
+  if (currentIndex.value < questions.value.length - 1) {
+    currentIndex.value++
+    selectedAnswer.value = null
   } else {
     clearInterval(timerId)
-    zavrsnoVrijeme.value = preostaloSekundi.value
-    testZavrsen.value = true
-    posaljiRezultat(preostaloSekundi.value)
+    finalTime.value = remainingSeconds.value
+    testFinished.value = true
+    submitResult(remainingSeconds.value)
   }
 }
 
-function zavrsiTestZbogVremena() {
-  if (testZavrsen.value) return
-  zavrsnoVrijeme.value = 0
-  testZavrsen.value = true
-  posaljiRezultat(0)
+function endTestDueToTime() {
+  if (testFinished.value) return
+  finalTime.value = 0
+  testFinished.value = true
+  submitResult(0)
 }
 
-function pokreniTimer() {
+function startTimer() {
   timerId = setInterval(() => {
-    preostaloSekundi.value--
-    if (preostaloSekundi.value <= 0) {
+    remainingSeconds.value--
+    if (remainingSeconds.value <= 0) {
       clearInterval(timerId)
-      zavrsiTestZbogVremena()
+      endTestDueToTime()
     }
   }, 1000)
 }
 
-function formatirajVrijeme(sekunde) {
-  const min = Math.floor(sekunde / 60)
-  const sek = sekunde % 60
-  return `${min}:${sek.toString().padStart(2, '0')}`
+function formatTime(seconds) {
+  const min = Math.floor(seconds / 60)
+  const sec = seconds % 60
+  return `${min}:${sec.toString().padStart(2, '0')}`
 }
 
-function formatirajPuno(sekunde) {
-  const h = Math.floor(sekunde / 3600)
-  const m = Math.floor((sekunde % 3600) / 60)
-  const s = sekunde % 60
+function formatFull(seconds) {
+  const h = Math.floor(seconds / 3600)
+  const m = Math.floor((seconds % 3600) / 60)
+  const s = seconds % 60
   return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
 }
 
-const pitanjeDio = computed(() => {
-  const puni = pitanja.value[trenutnoIndex.value]?.pitanje || ''
-  const idx = puni.indexOf('\n\n')
-  if (idx === -1) return { tekst: puni, kod: null }
-  return { tekst: puni.slice(0, idx), kod: puni.slice(idx + 2) }
+const questionPart = computed(() => {
+  const full = questions.value[currentIndex.value]?.pitanje || ''
+  const idx = full.indexOf('\n\n')
+  if (idx === -1) return { text: full, code: null }
+  return { text: full.slice(0, idx), code: full.slice(idx + 2) }
 })
 
 onMounted(() => {
-  vrijemePocetka.value = Date.now()
-  dohvatiPitanja()
-  pokreniTimer()
+  startTime.value = Date.now()
+  fetchQuestions()
+  startTimer()
 })
 
 onUnmounted(() => {
@@ -116,41 +116,41 @@ onUnmounted(() => {
 <template>
   <section class="exam-test-page">
     <div
-      v-if="!ucitavanje && !testZavrsen"
-      class="timer-fiksni"
-      :class="{ 'timer-hitno': preostaloSekundi <= 20 }"
+      v-if="!loading && !testFinished"
+      class="timer-fixed"
+      :class="{ 'timer-urgent': remainingSeconds <= 20 }"
     >
-      ⏱ {{ formatirajVrijeme(preostaloSekundi) }}
+      ⏱ {{ formatTime(remainingSeconds) }}
     </div>
 
-    <div v-if="ucitavanje">Učitavam pitanja...</div>
+    <div v-if="loading">Učitavam pitanja...</div>
 
-    <div v-else-if="testZavrsen" class="test-rezultat">
-    <p class="zavrsno-vrijeme" :class="zavrsnoVrijeme > 0 ? 'vrijeme-zeleno' : 'vrijeme-zuto'">
-      {{ formatirajPuno(zavrsnoVrijeme) }}
+    <div v-else-if="testFinished" class="test-result">
+    <p class="final-time" :class="finalTime > 0 ? 'time-green' : 'time-yellow'">
+      {{ formatFull(finalTime) }}
     </p>
      <h2>Test završen!</h2>
-     <p class="rezultat-brojka">Točno: {{ tocniOdgovori }} / {{ pitanja.length }}</p>
+     <p class="result-count">Točno: {{ correctAnswers }} / {{ questions.length }}</p>
     </div>
 
-    <div v-else-if="pitanja.length > 0" class="test-pitanje">
-      <p class="pitanje-broj">Pitanje {{ trenutnoIndex + 1 }} / {{ pitanja.length }}</p>
-      <h3>{{ pitanjeDio.tekst }}</h3>
-      <pre v-if="pitanjeDio.kod" class="pitanje-kod">{{ pitanjeDio.kod }}</pre>
+    <div v-else-if="questions.length > 0" class="test-question">
+      <p class="question-number">Pitanje {{ currentIndex + 1 }} / {{ questions.length }}</p>
+      <h3>{{ questionPart.text }}</h3>
+      <pre v-if="questionPart.code" class="question-code">{{ questionPart.code }}</pre>
 
-      <div class="odgovori">
-        <button :class="{ odabran: odabranaOdgovor === 'A' }" @click="odaberiOdgovor('A')">
-          {{ pitanja[trenutnoIndex].odgovor_a }}
+      <div class="answers">
+        <button :class="{ selected: selectedAnswer === 'A' }" @click="selectAnswer('A')">
+          {{ questions[currentIndex].odgovor_a }}
         </button>
-        <button :class="{ odabran: odabranaOdgovor === 'B' }" @click="odaberiOdgovor('B')">
-          {{ pitanja[trenutnoIndex].odgovor_b }}
+        <button :class="{ selected: selectedAnswer === 'B' }" @click="selectAnswer('B')">
+          {{ questions[currentIndex].odgovor_b }}
         </button>
-        <button :class="{ odabran: odabranaOdgovor === 'C' }" @click="odaberiOdgovor('C')">
-          {{ pitanja[trenutnoIndex].odgovor_c }}
+        <button :class="{ selected: selectedAnswer === 'C' }" @click="selectAnswer('C')">
+          {{ questions[currentIndex].odgovor_c }}
         </button>
       </div>
 
-      <button class="potvrdi-btn" :disabled="!odabranaOdgovor" @click="potvrdiOdgovor">
+      <button class="confirm-btn" :disabled="!selectedAnswer" @click="confirmAnswer">
         Potvrdi
       </button>
     </div>
