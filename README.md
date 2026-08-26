@@ -14,7 +14,6 @@ Web aplikacija FOI Practice služi kao mjesto za vježbanje i provjeru znanja: s
 
 Oznaka | Naziv | Kratki opis 
 ------ | ----- | ----------- 
-
 F01 | Pregled tematskih vježbi | Korisnik mora moći pregledati popis dostupnih tema za vježbanje, podijeljenih na front-end i back-end cjeline.
 F02 | Pregled dostupnih ispita | Korisnik mora moći pregledati popis ispita, podijeljenih po kategoriji (front-end/back-end) i razini težine (osnovna, umjerena, napredna).
 F03 | Rješavanje vježbi | Korisnik mora moći rješavati pitanja višestrukog izbora unutar odabrane teme te odmah nakon svakog pitanja dobiti povratnu informaciju o točnosti odgovora uz objašnjenje.
