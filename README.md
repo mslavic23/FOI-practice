@@ -28,12 +28,12 @@ NF02 | Sigurnost pristupa bazi podataka | Aplikacija mora koristiti parametrizir
  
 
 ## Tehnologije i oprema
-IDE: Visual Studio Code Insiders
-Jezik i okvir (frontend): JavaScript, Vue 3 (Vite)
-Poslužiteljska strana: Node.js, Express.js
-Baza podataka: MySQL
-Verzioniranje: Git (GitHub)
-Dokumentacija: Markdown (README.md), GitWiki i Projects
+- IDE: Visual Studio Code Insiders
+- Jezik i okvir (frontend): JavaScript, Vue 3 (Vite)
+- Poslužiteljska strana: Node.js, Express.js
+- Baza podataka: MySQL
+- Verzioniranje: Git (GitHub)
+- Dokumentacija: Markdown (README.md), GitWiki i Projects
  
 Svi korišteni alati i tehnologije su javno dostupni i posjeduju odgovarajuće licence za razvoj akademskih projekata.
 
